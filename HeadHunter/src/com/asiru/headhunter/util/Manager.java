@@ -1,6 +1,8 @@
 package com.asiru.headhunter.util;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
@@ -8,6 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import com.asiru.headhunter.HeadHunter;
+import com.asiru.headhunter.util.config.Node;
 
 public class Manager {
 	static DecimalFormat format = new DecimalFormat("0.00");
@@ -119,6 +122,14 @@ public class Manager {
 		if(Bukkit.getPlayerExact(s) != null)
 			return Bukkit.getPlayerExact(s);
 		return Bukkit.getOfflinePlayer(s);
+	}
+
+	public static List<String> getWhitelist() {
+		List<String> list = new ArrayList<String>();
+		ConfigAccessor whitelist = Manager.getAccessor("whitelist.yml");
+		if(whitelist.getConfig().contains("whitelist"))
+			list = whitelist.getConfig().getStringList("whitelist");
+		return list;
 	}
 	
 	public static ConfigAccessor getAccessor(String fileName) {

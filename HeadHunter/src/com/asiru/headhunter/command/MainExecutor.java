@@ -13,6 +13,9 @@ import com.asiru.headhunter.command.sub.Help;
 import com.asiru.headhunter.command.sub.Reload;
 import com.asiru.headhunter.command.sub.RemoveWorld;
 import com.asiru.headhunter.command.sub.SellHead;
+import com.asiru.headhunter.command.sub.Whitelist;
+import com.asiru.headhunter.conversion.CPlayerHeads;
+import com.asiru.headhunter.util.Messages;
 
 public class MainExecutor implements CommandExecutor {
 	@Override
@@ -31,6 +34,18 @@ public class MainExecutor implements CommandExecutor {
 					Help.run(sender, args);
 				else if(args[0].equalsIgnoreCase("list"))
 					BountyList.run(sender, args);
+				else if(args[0].equalsIgnoreCase("whitelist"))
+					Whitelist.run(sender, args);
+				else if(args[0].equalsIgnoreCase("convert")) {
+					if(args.length > 1) {
+						if(args[1].equalsIgnoreCase("PlayerHeads"))
+							CPlayerHeads.run(sender, args);
+						else
+							sender.sendMessage(Messages.CMD_CONVERT);	
+					}
+					else
+						sender.sendMessage(Messages.CMD_CONVERT);
+				}
 				else if(args[0].equalsIgnoreCase("bounty")) {
 					if(args.length > 1) {
 						if(args[1].equalsIgnoreCase("add"))

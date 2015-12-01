@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 
 import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.util.Messages;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.config.Node;
 import com.asiru.headhunter.util.Manager;
 
 public class AddWorld {

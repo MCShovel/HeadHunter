@@ -18,15 +18,25 @@ public class Messages {
 								BOUNTY_INVALID = 		"§cThat bounty does not exist!",
 								BOUNTY_DISABLED = 		"§cBounties are disabled!",
 								BOUNTIES_INVISIBLE =	"§cBounties cannot be displayed in a list!",
+								WHITELIST_EMPTY =		"§cThe whitelist is empty!",
+								WHITELIST_ADDED =		"§aPlayer added to HeadHunter whitelist!",
+								WHITELIST_REMOVED =		"§aPlayer removed from HeadHunter whitelist!",
+								WHITELIST_A_ERR =		"§cThat player is already on the whitelist!",
+								WHITELIST_R_ERR =		"§cThat player is not on the whitelist!",
+								WHITELIST_ERR =			"§cWhitelist could not be changed!",
 								AMOUNT_INVALID = 		"§cThat is an invalid amount!",
 								SELF_TARGET = 			"§cYou cannot target yourself!",
-								HOARD_MODE =			"§cYou cannot do that in Hoarder Mode!",
+								HOARD_MODE =			"§cYou cannot do that in Hoard Mode!",
+								CONVERT_SUCCESS =		"§aHeadHunter has successfully converted your inventory!",
 								CMD_ADD = 				"§6Usage: /hunter addworld <world>",
 								CMD_REMOVE = 			"§6Usage: /hunter removeworld <world>",
 								CMD_BOUNTY = 			"§6Usage: /hunter bounty <add | remove | check | list>",
 								CMD_BOUNTY_CHECK = 		"§6Usage: /hunter bounty check <target>",
 								CMD_BOUNTY_REMOVE = 	"§6Usage: /hunter bounty remove <target> [amount]",
 								CMD_BOUNTY_ADD = 		"§6Usage: /hunter bounty add <target> <amount>",
+								CMD_WHITELIST =			"§6Usage: /hunter whitelist [<add | remove> <target>]",
+								CMD_CONVERT =			"§6Usage: /hunter convert <PlayerHeads>",
+								CMD_CONVERT_ERR =		"§cYou cannot convert HeadHunter in Hoard Mode!",
 								CMD_RELOAD_ERR =		"§6You cannot reload that file!";
 	
 	public static final String[] 	HELP_NORMAL = { "&6---=< &eHeadHunter Help &6>=---", 
@@ -37,11 +47,15 @@ public class Messages {
 													"&6/hunter bounty <add | remove | check | list>", 
 													"   &eSet a bounty on a player's head" },
 													
-									HELP_ADMIN	= {	"&6/hunter addworld <world>", 
-													"   &eAdd a HeadHunter world", 
-													"&6/hunter removeworld <world>", 
-													"   &eRemove a HeadHunter world", 
-													"&6/hunter reload", 
-													"   &eReload the HeadHunter files" };
+									HELP_ADMIN	= {	"&6/hunter addworld <world>",
+													"   &eAdd a HeadHunter world",
+													"&6/hunter removeworld <world>",
+													"   &eRemove a HeadHunter world",
+													"&6/hunter convert <PlayerHeads>",
+													"   &eConvert to HeadHunter from a plugin",
+													"&6/hunter whitelist [<add | remove> <target>]",
+													"   &eChange the list of players to drop heads",
+													"&6/hunter reload",
+													"   &eReload the HeadHunter files"};
 	
 }

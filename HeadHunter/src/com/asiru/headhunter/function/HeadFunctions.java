@@ -1,13 +1,11 @@
 package com.asiru.headhunter.function;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
-import java.util.Set;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -16,7 +14,7 @@ import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.Messages;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.config.Node;
 import com.asiru.headhunter.util.pairing.PairState;
 import com.asiru.headhunter.util.pairing.PairedSkull;
 
@@ -26,13 +24,13 @@ public class HeadFunctions {
 	 * @param p - The player who is selling a head.
 	 */
 	public static void sellSkull(Player p) {
-		if(!HeadHunter.getCon().getBoolean(Node.Option.HOARD_MODE)) {
+		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.HOARD_MODE)) {
 			if(p.getItemInHand().getType() == Material.SKULL_ITEM) {
 				ItemStack skull = p.getItemInHand();
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
 				if(skull.getDurability() == 3) {
 					if(sm.hasOwner() && sm.hasLore()) {
-						if(Manager.getPlayerFromString(sm.getOwner()).getPlayer() != p) {
+						if(!Manager.getPlayerFromString(sm.getOwner()).getPlayer().equals(p)) {
 							double skullWorth = HeadFunctions.getValueOnSkull(skull);
 							HeadHunter.getEco().depositPlayer(p, skullWorth);
 							int amt = skull.getAmount();
@@ -40,13 +38,13 @@ public class HeadFunctions {
 								p.getInventory().remove(skull);
 							else
 								skull.setAmount(--amt);
-							if(HeadHunter.getCon().getBoolean(Node.Option.Message.SELL_NT)) {
-								boolean pub = HeadHunter.getCon().getBoolean(Node.Option.Message.SELL_PB);
+							if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_NT)) {
+								boolean pub = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_PB);
 								String notify = "";
 								if(skullWorth > 0.0)
-									notify = HeadHunter.getCon().getString(Node.Option.Format.SELL_NOTIFY);
+									notify = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SELL_NOTIFY);
 								else {
-									notify = HeadHunter.getCon().getString(Node.Option.Format.SELL_WORTHLESS);
+									notify = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SELL_WORTHLESS);
 									pub = false;
 								}
 								notify = Manager.formatRolesRaw(notify, p, sm.getOwner(), skullWorth);
@@ -66,13 +64,8 @@ public class HeadFunctions {
 				else
 					p.sendMessage(Messages.NO_HEADS);
 			}
-			else {
+			else
 				p.sendMessage(Messages.NO_SKULLS);
-				Set<Material> set = new HashSet<Material>();
-				set.add(Material.AIR);
-				PlayerFunctions.updateSignAt(p, p.getTargetBlock(set, 10).getLocation());
-				p.sendMessage(Messages.SIGN_UPDATE);
-			}
 		}
 		else
 			p.sendMessage(Messages.HOARD_MODE);
@@ -83,7 +76,7 @@ public class HeadFunctions {
 	 * @param p - The owner of the skull to be found.
 	 * @return The ItemStack of the specified player's skull.
 	 */
-	public static PairedSkull getPairedSkull(Player hunter, Player victim) {
+	public static PairedSkull getPairedSkull(Player hunter, OfflinePlayer victim) {
 		ItemStack skull = new ItemStack(Material.SKULL_ITEM, 1, (short) 3);
 		SkullMeta meta = (SkullMeta) skull.getItemMeta();
 		meta.setOwner(victim.getName());
@@ -93,10 +86,10 @@ public class HeadFunctions {
 				sellRate = PlayerFunctions.getSellRate(hunter),
 				skullWorth = 0,
 				ecoLoss = 0;
-		if(!HeadHunter.getCon().getBoolean(Node.Option.HOARD_MODE)) {
-			if(HeadHunter.getCon().getBoolean(Node.Option.ValuePlacement.BALANCE)) {
+		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.HOARD_MODE)) {
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.BALANCE)) {
 				state = PairState.BALANCE;
-				if(HeadHunter.getCon().getBoolean(Node.Option.USE_PERCENT))
+				if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.USE_PERCENT))
 					skullWorth = balance * (sellRate / 100.0);
 				else
 					skullWorth = sellRate;
@@ -106,7 +99,7 @@ public class HeadFunctions {
 				skullWorth = Math.round(skullWorth * 100.0) / 100.0;
 				ecoLoss = skullWorth;
 			}
-			if(HeadHunter.getCon().getBoolean(Node.Option.ValuePlacement.BOUNTY)) {
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.BOUNTY)) {
 				if(state == PairState.BALANCE)
 					state = PairState.BOTH;
 				else
@@ -115,7 +108,7 @@ public class HeadFunctions {
 				String targetUUID = victim.getUniqueId().toString();
 				if(offers.getConfig().contains(targetUUID)) {
 					double fullValue = PlayerFunctions.getTotalBounty(targetUUID);
-					if(HeadHunter.getCon().getBoolean(Node.Option.ValuePlacement.CUMULATIVE))
+					if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.CUMULATIVE))
 						skullWorth += fullValue;
 					else {
 						state = PairState.BOUNTY;
@@ -130,9 +123,9 @@ public class HeadFunctions {
 			}
 			String skullTag = "";
 			if(skullWorth > 0)
-				skullTag = HeadHunter.getCon().getString(Node.Option.Format.SKULL_VALUE);
+				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SKULL_VALUE);
 			else
-				skullTag = HeadHunter.getCon().getString(Node.Option.Format.SKULL_WORTHLESS);
+				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SKULL_WORTHLESS);
 			skullTag = Manager.formatBaseRoles(skullTag, victim, skullWorth);
 			skullTag = Manager.formatColor(skullTag);
 			loreList.add(skullTag);
@@ -148,8 +141,8 @@ public class HeadFunctions {
 	 * @return True if the drop will be a success, false otherwise.
 	 */
 	public static boolean dropWith(PairState skullState) {
-		boolean	dropWithBalance = HeadHunter.getCon().getBoolean(Node.Option.Drop.BALANCE),
-				dropWithBounty = HeadHunter.getCon().getBoolean(Node.Option.Drop.BOUNTY);
+		boolean	dropWithBalance = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Drop.BALANCE),
+				dropWithBounty = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Drop.BOUNTY);
 		if(dropWithBalance) {
 			if(dropWithBounty) {
 				//If balance and bounty are both true.
@@ -184,8 +177,9 @@ public class HeadFunctions {
 	 */
 	public static boolean luckDrop(double dropRate) {
 		Random random = new Random();
-		int x = random.nextInt(100) + 1;
-		if(x <= dropRate)
+		double x = random.nextInt(10000);
+		x /= 100.0;
+		if(x < dropRate)
 			return true;
 		return false;
 	}
@@ -196,7 +190,7 @@ public class HeadFunctions {
 	 * @return The value in the skull's lore.
 	 */
 	public static double getValueOnSkull(ItemStack skull) {
-		String loreString = (String)skull.getItemMeta().getLore().get(0);
+		String loreString = skull.getItemMeta().getLore().get(0);
 		loreString = HeadFunctions.removeLoreFormat(loreString);
 		double skullWorth = 0.0;
 		if(!loreString.isEmpty() && loreString.matches("[0-9]*[.][0-9]*"))

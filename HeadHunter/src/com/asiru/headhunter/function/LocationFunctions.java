@@ -9,7 +9,7 @@ import org.bukkit.plugin.Plugin;
 
 import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.util.Manager;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.config.Node;
 import com.massivecraft.factions.entity.BoardColl;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.massivecore.ps.PS;

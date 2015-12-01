@@ -12,11 +12,14 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.asiru.headhunter.command.MainExecutor;
+import com.asiru.headhunter.conversion.CPlayerHeads;
 import com.asiru.headhunter.listener.PlayerListeners;
 import com.asiru.headhunter.listener.SignListeners;
 import com.asiru.headhunter.listener.SkullListeners;
 import com.asiru.headhunter.util.ConfigAccessor;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.Manager;
+import com.asiru.headhunter.util.config.Node;
+import com.asiru.headhunter.util.config.Prop;
 
 public class HeadHunter extends JavaPlugin {
 	private static Plugin plugin;
@@ -24,22 +27,25 @@ public class HeadHunter extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		plugin = this;
-		
-		ConfigAccessor accessor1 = new ConfigAccessor(this, "offers.yml");
-		ConfigAccessor accessor2 = new ConfigAccessor(this, "skulls.yml");
-		ConfigAccessor accessor3 = new ConfigAccessor(this, "signs.yml");
+		ConfigAccessor offers = new ConfigAccessor(this, "offers.yml");
+		ConfigAccessor skulls = new ConfigAccessor(this, "skulls.yml");
+		ConfigAccessor signs = new ConfigAccessor(this, "signs.yml");
+		ConfigAccessor properties = new ConfigAccessor(this, "properties.yml");
+		ConfigAccessor whitelist = new ConfigAccessor(this, "whitelist.yml");
 		getCommand("hunter").setExecutor(new MainExecutor());
 		getCommand("sellhead").setExecutor(new MainExecutor());
 		getCommand("bounty").setExecutor(new MainExecutor());
 		getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
 		getServer().getPluginManager().registerEvents(new SignListeners(), this);
 		getServer().getPluginManager().registerEvents(new SkullListeners(), this);
+		getServer().getPluginManager().registerEvents(new CPlayerHeads(), this);
 		saveDefaultConfig();
-		refreshDefaults();
-		accessor1.saveDefaultConfig();
-		accessor2.saveDefaultConfig();
-		accessor3.saveDefaultConfig();
-		saveConfig();
+		reloadConfig();
+		offers.saveDefaultConfig();
+		skulls.saveDefaultConfig();
+		signs.saveDefaultConfig();
+		properties.saveDefaultConfig();
+		whitelist.saveDefaultConfig();
 		Bukkit.getConsoleSender().sendMessage("§a" + getTag() + " has been Enabled!");
 	}
 	
@@ -53,7 +59,7 @@ public class HeadHunter extends JavaPlugin {
 	}
 	
 	/**
-	 * @return The public instance of this plugin.
+	 * @return The main instance of this plugin.
 	 */
 	public static Plugin getPlugin() {
 		return plugin;
@@ -64,10 +70,6 @@ public class HeadHunter extends JavaPlugin {
 	 */
 	public static Economy getEco() {
 		return (Economy) getPlugin().getServer().getServicesManager().getRegistration(Economy.class).getProvider();
-	}
-	
-	public static FileConfiguration getCon() {
-		return getPlugin().getConfig();
 	}
 	
 	/**
@@ -89,7 +91,8 @@ public class HeadHunter extends JavaPlugin {
 	/**
 	 * Replaces any removed or missing default config values.
 	 */
-	public static void refreshDefaults() {
+	@Deprecated
+	public static void refreshConfig() {
 		FileConfiguration config = plugin.getConfig();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 		
@@ -112,8 +115,10 @@ public class HeadHunter extends JavaPlugin {
 		map.put(Node.Option.ValuePlacement.BOUNTY, true);
 		map.put(Node.Option.ValuePlacement.CUMULATIVE, false);
 		
-		map.put(Node.Option.Format.SIGN, "&4&l[SellHead]");
+		map.put(Node.Option.Format.SIGN_TOP, "---------------");
+		map.put(Node.Option.Format.SIGN_TITLE, "&4&l[SellHead]");
 		map.put(Node.Option.Format.SIGN_VALUE, "VALUE");
+		map.put(Node.Option.Format.SIGN_BOTTOM, "---------------");
 		map.put(Node.Option.Format.SKULL_VALUE, "&eSell Price:&a $VALUE");
 		map.put(Node.Option.Format.SKULL_WORTHLESS, "&eSell Price: &cWorthless");
 		map.put(Node.Option.Format.SELL_NOTIFY, "&6HUNTER sold VICTIM's head for $VALUE!");
@@ -135,5 +140,18 @@ public class HeadHunter extends JavaPlugin {
 				config.set(entry.getKey(), entry.getValue());
 		}
 		plugin.saveConfig();
+	}
+	
+	public static void refreshProperties() {
+		ConfigAccessor prop = Manager.getAccessor("properties.yml");
+		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
+		
+		map.put(Prop.CONVERT_ON_LOGIN, false);
+		
+		for(Entry<String, Object> entry : map.entrySet()) {
+			if(!prop.getConfig().contains(entry.getKey()))
+				prop.getConfig().set(entry.getKey(), entry.getValue());
+		}
+		prop.saveConfig();
 	}
 }

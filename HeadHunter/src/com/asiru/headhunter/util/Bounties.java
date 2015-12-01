@@ -10,7 +10,7 @@ import com.asiru.headhunter.HeadHunter;
 
 public class Bounties {
 	/**
-	 * Applies a bounty to the config: creating, remove, adding, or subtracting as necessary.
+	 * Applies a bounty to the config; creating, remove, adding, or subtracting as necessary.
 	 * @param hunter - The player who changed the bounty.
 	 * @param target - The player who was targeted in the bounty.
 	 * @param amount - The amount of money the victim was targeted for.

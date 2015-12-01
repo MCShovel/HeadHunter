@@ -19,7 +19,7 @@ import com.asiru.headhunter.function.PlayerFunctions;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.Messages;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.config.Node;
 
 public class SignListeners implements Listener {
 	@EventHandler
@@ -30,10 +30,10 @@ public class SignListeners implements Listener {
 				String tag = LocationFunctions.parseLocation(e.getBlock().getLocation());
 				signs.getConfig().set(tag, e.getPlayer().getUniqueId().toString());
 				signs.saveConfig();
-				e.setLine(0, "---------------");
-				e.setLine(1, Manager.formatColor(HeadHunter.getCon().getString(Node.Option.Format.SIGN)));
-				e.setLine(2, "");
-				e.setLine(3, "---------------");
+				e.setLine(0, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP)));
+				e.setLine(1, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE)));
+				e.setLine(2, "Click to Refresh");
+				e.setLine(3, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM)));
 				final Location loc = e.getBlock().getLocation();
 				Bukkit.getScheduler().runTaskLater(HeadHunter.getPlugin(), new Runnable() {
 					@Override
@@ -86,6 +86,8 @@ public class SignListeners implements Listener {
 				else
 					p.sendMessage(Messages.NO_PERMS);
 			}
+			PlayerFunctions.updateSignAt(p, loc);
+			p.sendMessage(Messages.SIGN_UPDATE);
 		}
 	}
 }

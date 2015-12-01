@@ -12,11 +12,11 @@ import org.bukkit.permissions.PermissionAttachmentInfo;
 import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
-import com.asiru.headhunter.util.Node;
+import com.asiru.headhunter.util.config.Node;
 
 public class PlayerFunctions {
 	public static double getSellRate(Player p) {
-		double sellRate = HeadHunter.getCon().getDouble(Node.Option.SELL_RATE);
+		double sellRate = HeadHunter.getPlugin().getConfig().getDouble(Node.Option.SELL_RATE);
 		for(PermissionAttachmentInfo perm : p.getEffectivePermissions()) {
 			if(perm.getPermission().startsWith("hunter.sellrate.")) {
 				String num = perm.getPermission().replace("hunter.sellrate.", "");
@@ -29,18 +29,24 @@ public class PlayerFunctions {
 	
 	public static void updateSignAt(Player p, Location loc) {
 		if(loc.getBlock().getState() instanceof Sign) {
-			String value = HeadHunter.getCon().getString(Node.Option.Format.SIGN_VALUE);
-			if(HeadHunter.getCon().getBoolean(Node.Option.USE_PERCENT))
+			String top = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP);
+			String title = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE);
+			String value = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_VALUE);
+			String bottom = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM);
+			String rate = getSellRate(p) + "";
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.USE_PERCENT))
 				value = value + "%";
 			else
 				value = "$" + value;
-			value = Manager.formatColor(value.replaceAll("VALUE", getSellRate(p) + ""));
-			String title = Manager.formatColor(HeadHunter.getCon().getString(Node.Option.Format.SIGN));
+			top = Manager.formatColor(top.replaceAll("VALUE", rate));
+			title = Manager.formatColor(title.replaceAll("VALUE", rate));
+			value = Manager.formatColor(value.replaceAll("VALUE", rate));
+			bottom = Manager.formatColor(bottom.replaceAll("VALUE", rate));
 			p.sendSignChange(loc, new String[]{
-					"---------------",
+					top,
 					title,
 					value,
-					"---------------"
+					bottom
 			});
 		}
 	}
@@ -72,5 +78,11 @@ public class PlayerFunctions {
 			}
 		}
 		return fullValue;
+	}
+	
+	public static boolean isPlayerListed(Player p) {
+		if(Manager.getWhitelist().contains(p.getUniqueId().toString()))
+			return true;
+		return false;
 	}
 }

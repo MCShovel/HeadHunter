@@ -1,4 +1,4 @@
-package com.asiru.headhunter.util;
+package com.asiru.headhunter.util.config;
 
 public class Node {
 	public static class Option {
@@ -28,8 +28,10 @@ public class Node {
 		}
 		
 		public static class Format {
-			public static final String	SIGN =				"options.format.sign",
-										SIGN_VALUE =		"options.format.sign-value",
+			public static final String	SIGN_TITLE =		"options.format.sign.title",
+										SIGN_VALUE =		"options.format.sign.value",
+										SIGN_TOP =			"options.format.sign.top",
+										SIGN_BOTTOM =		"options.format.sign.bottom",
 										SKULL_VALUE =		"options.format.skull-value",
 										SKULL_WORTHLESS =	"options.format.skull-worthless",
 										SELL_NOTIFY =		"options.format.sell-notify",
