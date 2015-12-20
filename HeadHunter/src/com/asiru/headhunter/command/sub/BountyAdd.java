@@ -30,17 +30,22 @@ public class BountyAdd {
 								if(!target.getUniqueId().toString().equals(p.getUniqueId().toString())) {
 									double amount = Double.parseDouble(args[3]);
 									if((amount > 0) && (amount < HeadHunter.getEco().getBalance(p))) {
-										Bounties.applyBounty(p, target, amount);
-										HeadHunter.getEco().withdrawPlayer(p, amount);
-										String msg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.BOUNTY_PLACE);
-										msg = Manager.formatRoles(msg, p, target, amount);
-										msg = Manager.formatColor(msg);
-										if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_NT)) {
-											if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_PB))
-												Bukkit.broadcastMessage(msg);
-											else
-												p.sendMessage(msg);
+										double min = HeadHunter.getPlugin().getConfig().getDouble(Node.Option.MIN_BOUNTY);
+										if(amount >= min) {
+											Bounties.applyBounty(p, target, amount);
+											HeadHunter.getEco().withdrawPlayer(p, amount);
+											String msg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.BOUNTY_PLACE);
+											msg = Manager.formatRoles(msg, p, target, amount);
+											msg = Manager.formatColor(msg);
+											if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_NT)) {
+												if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_PB))
+													Bukkit.broadcastMessage(msg);
+												else
+													p.sendMessage(msg);
+											}
 										}
+										else
+											p.sendMessage(Messages.AMOUNT_LOW);
 									}
 									else
 										p.sendMessage(Messages.AMOUNT_INVALID);

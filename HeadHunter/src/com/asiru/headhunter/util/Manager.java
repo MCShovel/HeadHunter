@@ -50,6 +50,10 @@ public class Manager {
 		return s;
 	}
 	
+	public static String formatMoney(double n) {
+		return format.format(n);
+	}
+	
 	/**
 	 * Replaces text variables in a string with their respective roles.
 	 * @param s - The string to be formatted.
@@ -74,7 +78,8 @@ public class Manager {
 	 * @return The formatted string.
 	 */
 	public static String formatRolesRaw(String s, Player hunter, String targetName, double value) {
-		s = s.replaceAll("HUNTER", hunter.getName());
+		if(hunter != null)
+			s = s.replaceAll("HUNTER", hunter.getName());
 		s = s.replaceAll("VICTIM", targetName);
 		s = s.replaceAll("VALUE", format.format(value));
 		return s;
@@ -124,6 +129,10 @@ public class Manager {
 		return Bukkit.getOfflinePlayer(s);
 	}
 
+	/**
+	 * Finds the list of UUIDs in the whitelist.yml.
+	 * @return The List of player UUIDs
+	 */
 	public static List<String> getWhitelist() {
 		List<String> list = new ArrayList<String>();
 		ConfigAccessor whitelist = Manager.getAccessor("whitelist.yml");

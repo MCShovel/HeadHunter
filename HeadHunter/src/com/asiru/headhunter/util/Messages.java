@@ -16,6 +16,8 @@ public class Messages {
 								NO_SKULLS = 			"§cYou are not holding any heads!",
 								NO_BOUNTIES =			"§cThere are no bounties!",
 								BOUNTY_INVALID = 		"§cThat bounty does not exist!",
+								BOUNTY_LOW =			"§cThat bounty is too low!",
+								BOUNTY_HIGH =			"§cThat bounty is too high!",
 								BOUNTY_DISABLED = 		"§cBounties are disabled!",
 								BOUNTIES_INVISIBLE =	"§cBounties cannot be displayed in a list!",
 								WHITELIST_EMPTY =		"§cThe whitelist is empty!",
@@ -25,6 +27,7 @@ public class Messages {
 								WHITELIST_R_ERR =		"§cThat player is not on the whitelist!",
 								WHITELIST_ERR =			"§cWhitelist could not be changed!",
 								AMOUNT_INVALID = 		"§cThat is an invalid amount!",
+								AMOUNT_LOW =			"§cThat bounty is too low!",
 								SELF_TARGET = 			"§cYou cannot target yourself!",
 								HOARD_MODE =			"§cYou cannot do that in Hoard Mode!",
 								CONVERT_SUCCESS =		"§aHeadHunter has successfully converted your inventory!",
@@ -57,5 +60,9 @@ public class Messages {
 													"   &eChange the list of players to drop heads",
 													"&6/hunter reload",
 													"   &eReload the HeadHunter files"};
+	
+	public static void refresh() {
+		
+	}
 	
 }

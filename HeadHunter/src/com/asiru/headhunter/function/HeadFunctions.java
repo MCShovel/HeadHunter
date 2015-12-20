@@ -17,6 +17,7 @@ import com.asiru.headhunter.util.Messages;
 import com.asiru.headhunter.util.config.Node;
 import com.asiru.headhunter.util.pairing.PairState;
 import com.asiru.headhunter.util.pairing.PairedSkull;
+import com.asiru.mobhunter.MobHunter;
 
 public class HeadFunctions {
 	/**
@@ -30,7 +31,23 @@ public class HeadFunctions {
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
 				if(skull.getDurability() == 3) {
 					if(sm.hasOwner() && sm.hasLore()) {
-						if(!Manager.getPlayerFromString(sm.getOwner()).getPlayer().equals(p)) {
+						String owner = null;
+						String uuid = "";
+						try {
+							owner = sm.getOwner();
+							if(HeadHunter.isHunterEnabled("MobHunter") && owner.startsWith("MHF_")) {
+								owner = owner.replaceFirst("MHF_", "");
+								owner = MobHunter.mobList.get(owner).toLowerCase();
+								String article = "a";
+								if(owner.startsWith("a") || owner.startsWith("e") || owner.startsWith("i") ||
+										owner.startsWith("o") || owner.startsWith("u"))
+									article = "an";
+								owner = article + " " + owner;
+							}
+							else
+								uuid = Manager.getPlayerFromString(owner).getUniqueId().toString();
+						} catch(NullPointerException npe) {}
+						if(owner != null && !uuid.equals(p.getUniqueId().toString())) {
 							double skullWorth = HeadFunctions.getValueOnSkull(skull);
 							HeadHunter.getEco().depositPlayer(p, skullWorth);
 							int amt = skull.getAmount();
@@ -47,7 +64,7 @@ public class HeadFunctions {
 									notify = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SELL_WORTHLESS);
 									pub = false;
 								}
-								notify = Manager.formatRolesRaw(notify, p, sm.getOwner(), skullWorth);
+								notify = Manager.formatRolesRaw(notify, p, owner, skullWorth);
 								notify = Manager.formatColor(notify);
 								if(pub)
 									Bukkit.broadcastMessage(notify);
@@ -185,7 +202,9 @@ public class HeadFunctions {
 	}
 
 	/**
-	 * Gets the value on a skull's lore. If the lore is missing or invalid, this method will return 0.
+	 * Gets the value on a skull's lore. 
+	 * <p>
+	 * If the lore is missing or invalid, this method will return 0.
 	 * @param skull - The ItemStack of the skull.
 	 * @return The value in the skull's lore.
 	 */
@@ -200,6 +219,8 @@ public class HeadFunctions {
 	
 	/**
 	 * Removes all characters from a string except numbers and decimals.
+	 * <p>
+	 * <i>This also works with the sellhead gui.</i>
 	 * @param s - The string to be formatted.
 	 * @return The formatted string.
 	 */

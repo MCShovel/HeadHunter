@@ -6,7 +6,16 @@ public class Node {
 									SELL_RATE =		"options.sell-rate",
 									USE_PERCENT =	"options.use-percentage",
 									USE_PERMS =		"options.use-permissions",
-									LIST_SIZE =		"options.bounty-list-size";
+									LIST_SIZE =		"options.bounty-list-size",
+									MIN_BOUNTY = 	"options.minimum-bounty";
+		
+		public static class Gui {
+			public static final String	ENABLED =		"options.gui.enabled",
+										TITLE =			"options.gui.title",
+										SIZE =			"options.gui.size",
+										TOTAL_VALUE =	"options.gui.total-value",
+										SELL_MESSAGE =	"options.gui.sell-message";
+		}
 		
 		public static class Drop {
 			public static final String	RATE =		"options.drop.rate",
@@ -51,6 +60,8 @@ public class Node {
 	public static class PluginSupport {
 		public static final String	FACTIONS_WILDERNESS =	"plugin-support.factions.enabled.wilderness",
 									FACTIONS_WARZONE =		"plugin-support.factions.enabled.warzone",
-									FACTIONS_SAFEZONE =		"plugin-support.factions.enabled.safezone";
+									FACTIONS_SAFEZONE =		"plugin-support.factions.enabled.safezone",
+									
+									MOBHUNTER_SILENCE =		"plugin-support.mobhunter.silence-notify";
 	}
 }

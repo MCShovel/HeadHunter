@@ -13,6 +13,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.asiru.headhunter.command.MainExecutor;
 import com.asiru.headhunter.conversion.CPlayerHeads;
+import com.asiru.headhunter.gui.GUIListeners;
 import com.asiru.headhunter.listener.PlayerListeners;
 import com.asiru.headhunter.listener.SignListeners;
 import com.asiru.headhunter.listener.SkullListeners;
@@ -23,6 +24,8 @@ import com.asiru.headhunter.util.config.Prop;
 
 public class HeadHunter extends JavaPlugin {
 	private static Plugin plugin;
+	
+	private static LinkedHashMap<String, Boolean> hunterMap = new LinkedHashMap<String, Boolean>();
 	
 	@Override
 	public void onEnable() {
@@ -39,7 +42,9 @@ public class HeadHunter extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new SignListeners(), this);
 		getServer().getPluginManager().registerEvents(new SkullListeners(), this);
 		getServer().getPluginManager().registerEvents(new CPlayerHeads(), this);
+		getServer().getPluginManager().registerEvents(new GUIListeners(), this);
 		saveDefaultConfig();
+		refreshConfig();
 		reloadConfig();
 		offers.saveDefaultConfig();
 		skulls.saveDefaultConfig();
@@ -80,6 +85,24 @@ public class HeadHunter extends JavaPlugin {
 		return r;
 	}
 	
+	/**
+	 * Uses a plugin name and a boolean state to set whether another Hunter plugin is enabled.
+	 * @param pluginName - The name of the other Hunter plugin.
+	 * @param enabled - The state whether the plugin by that name is enabled.
+	 */
+	public static void setHunterEnabled(String pluginName, boolean enabled) {
+		hunterMap.put(pluginName, enabled);
+	}
+	
+	/**
+	 * Uses a plugin name to tell whether another Hunter plugin is enabled.
+	 * @param pluginName - The name of the other Hunter plugin.
+	 * @return - The state whether the plugin by that name is enabled.
+	 */
+	public static boolean isHunterEnabled(String pluginName) {
+		return hunterMap.get(pluginName);
+	}
+	
 	public static List<String> initList() {
 		List<String> r = new ArrayList<String>();
 		r.add("world");
@@ -91,7 +114,6 @@ public class HeadHunter extends JavaPlugin {
 	/**
 	 * Replaces any removed or missing default config values.
 	 */
-	@Deprecated
 	public static void refreshConfig() {
 		FileConfiguration config = plugin.getConfig();
 		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
@@ -101,6 +123,13 @@ public class HeadHunter extends JavaPlugin {
 		map.put(Node.Option.USE_PERCENT, true);
 		map.put(Node.Option.USE_PERMS, true);
 		map.put(Node.Option.LIST_SIZE, -1);
+		map.put(Node.Option.MIN_BOUNTY, 20.0);
+		
+		map.put(Node.Option.Gui.ENABLED, false);
+		map.put(Node.Option.Gui.TITLE, "&4&lSell Heads");
+		map.put(Node.Option.Gui.SIZE, 54);
+		map.put(Node.Option.Gui.TOTAL_VALUE, "&eTotal Sell Price:&a $VALUE");
+		map.put(Node.Option.Gui.SELL_MESSAGE, "&6HUNTER sold AMOUNT head(s) for $VALUE!");
 		
 		map.put(Node.Option.Drop.RATE, 100.0);
 		map.put(Node.Option.Drop.BALANCE, true);
@@ -121,10 +150,10 @@ public class HeadHunter extends JavaPlugin {
 		map.put(Node.Option.Format.SIGN_BOTTOM, "---------------");
 		map.put(Node.Option.Format.SKULL_VALUE, "&eSell Price:&a $VALUE");
 		map.put(Node.Option.Format.SKULL_WORTHLESS, "&eSell Price: &cWorthless");
-		map.put(Node.Option.Format.SELL_NOTIFY, "&6HUNTER sold VICTIM's head for $VALUE!");
+		map.put(Node.Option.Format.SELL_NOTIFY, "&6HUNTER sold VICTIM\'s head for $VALUE!");
 		map.put(Node.Option.Format.SELL_WORTHLESS, "&cThis skull is worthless! It has been removed from your inventory.");
-		map.put(Node.Option.Format.BOUNTY_PLACE, "&6Player &eHUNTER &6has added&e $VALUE &6to &eVICTIM&6's bounty!");
-		map.put(Node.Option.Format.BOUNTY_REMOVE, "&6Player &eHUNTER &6has removed&e $VALUE &6from &eVICTIM&6's bounty!");
+		map.put(Node.Option.Format.BOUNTY_PLACE, "&6Player &eHUNTER &6has added&e $VALUE &6to &eVICTIM&6\'s bounty!");
+		map.put(Node.Option.Format.BOUNTY_REMOVE, "&6Player &eHUNTER &6has removed&e $VALUE &6from &eVICTIM&6\'s bounty!");
 		map.put(Node.Option.Format.BOUNTY_TOTAL, "&6Total Bounty on &eVICTIM&6:&e $VALUE");
 		map.put(Node.Option.Format.BOUNTY_PERSONAL, "&6Your Bounty on &eVICTIM&6:&e $VALUE");
 		
@@ -134,6 +163,8 @@ public class HeadHunter extends JavaPlugin {
 		map.put(Node.PluginSupport.FACTIONS_WILDERNESS, true);
 		map.put(Node.PluginSupport.FACTIONS_WARZONE, false);
 		map.put(Node.PluginSupport.FACTIONS_SAFEZONE, false);
+		
+		map.put(Node.PluginSupport.MOBHUNTER_SILENCE, false);
 		
 		for(Entry<String, Object> entry : map.entrySet()) {
 			if(!config.contains(entry.getKey()))

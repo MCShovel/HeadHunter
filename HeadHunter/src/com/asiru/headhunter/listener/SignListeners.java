@@ -30,10 +30,13 @@ public class SignListeners implements Listener {
 				String tag = LocationFunctions.parseLocation(e.getBlock().getLocation());
 				signs.getConfig().set(tag, e.getPlayer().getUniqueId().toString());
 				signs.saveConfig();
-				e.setLine(0, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP)));
-				e.setLine(1, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE)));
+				String top = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP);
+				String title = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE);
+				String bottom = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM);
+				e.setLine(0, Manager.formatColor(top));
+				e.setLine(1, Manager.formatColor(title));
 				e.setLine(2, "Click to Refresh");
-				e.setLine(3, Manager.formatColor(HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM)));
+				e.setLine(3, Manager.formatColor(bottom));
 				final Location loc = e.getBlock().getLocation();
 				Bukkit.getScheduler().runTaskLater(HeadHunter.getPlugin(), new Runnable() {
 					@Override
@@ -85,9 +88,9 @@ public class SignListeners implements Listener {
 					HeadFunctions.sellSkull(p);
 				else
 					p.sendMessage(Messages.NO_PERMS);
+				PlayerFunctions.updateSignAt(p, loc);
+				p.sendMessage(Messages.SIGN_UPDATE);
 			}
-			PlayerFunctions.updateSignAt(p, loc);
-			p.sendMessage(Messages.SIGN_UPDATE);
 		}
 	}
 }
