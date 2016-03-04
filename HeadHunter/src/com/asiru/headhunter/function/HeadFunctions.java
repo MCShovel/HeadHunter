@@ -25,7 +25,7 @@ public class HeadFunctions {
 	 * @param p - The player who is selling a head.
 	 */
 	public static void sellSkull(Player p) {
-		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.HOARD_MODE)) {
+		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
 			if(p.getItemInHand().getType() == Material.SKULL_ITEM) {
 				ItemStack skull = p.getItemInHand();
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
@@ -55,13 +55,13 @@ public class HeadFunctions {
 								p.getInventory().remove(skull);
 							else
 								skull.setAmount(--amt);
-							if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_NT)) {
-								boolean pub = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_PB);
+							if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_SELL_NT)) {
+								boolean pub = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_SELL_PB);
 								String notify = "";
 								if(skullWorth > 0.0)
-									notify = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SELL_NOTIFY);
+									notify = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SELL_NOTIFY);
 								else {
-									notify = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SELL_WORTHLESS);
+									notify = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SELL_WORTHLESS);
 									pub = false;
 								}
 								notify = Manager.formatRolesRaw(notify, p, owner, skullWorth);
@@ -103,10 +103,10 @@ public class HeadFunctions {
 				sellRate = PlayerFunctions.getSellRate(hunter),
 				skullWorth = 0,
 				ecoLoss = 0;
-		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.HOARD_MODE)) {
-			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.BALANCE)) {
+		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_VP_BALANCE)) {
 				state = PairState.BALANCE;
-				if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.USE_PERCENT))
+				if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_USE_PERCENT))
 					skullWorth = balance * (sellRate / 100.0);
 				else
 					skullWorth = sellRate;
@@ -116,7 +116,7 @@ public class HeadFunctions {
 				skullWorth = Math.round(skullWorth * 100.0) / 100.0;
 				ecoLoss = skullWorth;
 			}
-			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.BOUNTY)) {
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_VP_BOUNTY)) {
 				if(state == PairState.BALANCE)
 					state = PairState.BOTH;
 				else
@@ -125,7 +125,7 @@ public class HeadFunctions {
 				String targetUUID = victim.getUniqueId().toString();
 				if(offers.getConfig().contains(targetUUID)) {
 					double fullValue = PlayerFunctions.getTotalBounty(targetUUID);
-					if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.CUMULATIVE))
+					if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_VP_CUMULATIVE))
 						skullWorth += fullValue;
 					else {
 						state = PairState.BOUNTY;
@@ -140,9 +140,9 @@ public class HeadFunctions {
 			}
 			String skullTag = "";
 			if(skullWorth > 0)
-				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SKULL_VALUE);
+				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SKULL_VALUE);
 			else
-				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SKULL_WORTHLESS);
+				skullTag = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SKULL_WORTHLESS);
 			skullTag = Manager.formatBaseRoles(skullTag, victim, skullWorth);
 			skullTag = Manager.formatColor(skullTag);
 			loreList.add(skullTag);
@@ -158,8 +158,8 @@ public class HeadFunctions {
 	 * @return True if the drop will be a success, false otherwise.
 	 */
 	public static boolean dropWith(PairState skullState) {
-		boolean	dropWithBalance = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Drop.BALANCE),
-				dropWithBounty = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Drop.BOUNTY);
+		boolean	dropWithBalance = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_D_BALANCE),
+				dropWithBounty = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_D_BOUNTY);
 		if(dropWithBalance) {
 			if(dropWithBounty) {
 				//If balance and bounty are both true.

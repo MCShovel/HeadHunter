@@ -16,6 +16,7 @@ import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.function.HeadFunctions;
 import com.asiru.headhunter.function.LocationFunctions;
 import com.asiru.headhunter.function.PlayerFunctions;
+import com.asiru.headhunter.gui.HunterGUI;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.Messages;
@@ -30,9 +31,9 @@ public class SignListeners implements Listener {
 				String tag = LocationFunctions.parseLocation(e.getBlock().getLocation());
 				signs.getConfig().set(tag, e.getPlayer().getUniqueId().toString());
 				signs.saveConfig();
-				String top = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP);
-				String title = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE);
-				String bottom = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM);
+				String top = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_TOP);
+				String title = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_TITLE);
+				String bottom = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_BOTTOM);
 				e.setLine(0, Manager.formatColor(top));
 				e.setLine(1, Manager.formatColor(title));
 				e.setLine(2, "Click to Refresh");
@@ -84,8 +85,12 @@ public class SignListeners implements Listener {
 			Location loc = e.getClickedBlock().getLocation();
 			ConfigAccessor signs = Manager.getAccessor("signs.yml");
 			if(signs.getConfig().contains(LocationFunctions.parseLocation(loc))) {
-				if(Manager.hasAnyPerms(p, new String[]{"hunter.sell", "hunter.use"}))
-					HeadFunctions.sellSkull(p);
+				if(Manager.hasAnyPerms(p, new String[]{"hunter.sell", "hunter.use"})) {
+					if(HunterGUI.isEnabled())
+						HunterGUI.openGUI(p);
+					else
+						HeadFunctions.sellSkull(p);
+				}
 				else
 					p.sendMessage(Messages.NO_PERMS);
 				PlayerFunctions.updateSignAt(p, loc);

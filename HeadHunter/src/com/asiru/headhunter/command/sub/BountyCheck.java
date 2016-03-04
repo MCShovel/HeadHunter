@@ -20,14 +20,14 @@ public class BountyCheck {
 	 */
 	public static void run(CommandSender sender, String[] args) {
 		if(Manager.hasAnyPerms(sender, new String[]{"hunter.bounty.check", "hunter.bounty", "hunter.use"})) {
-			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.ValuePlacement.BOUNTY)) {
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_VP_BOUNTY)) {
 				if(args.length == 3) {
 					OfflinePlayer p = Manager.getPlayerFromString(args[2]);
 					if(p != null) {
 						String targetUUID = p.getUniqueId().toString();
 						double fullValue = Bounties.getTotalBounty(targetUUID);
 						if(fullValue > 0) {
-							String totalMsg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.BOUNTY_TOTAL);
+							String totalMsg = HeadHunter.getPlugin().getConfig().getString(Node.O_F_BOUNTY_TOTAL);
 							totalMsg = Manager.formatBaseRoles(totalMsg, p, fullValue);
 							totalMsg = Manager.formatColor(totalMsg);
 							sender.sendMessage(totalMsg);
@@ -38,7 +38,7 @@ public class BountyCheck {
 								if(accessor.getConfig().contains(newPath)) {
 									double amount = accessor.getConfig().getDouble(newPath);
 									FileConfiguration config = HeadHunter.getPlugin().getConfig();
-									String personMsg = config.getString(Node.Option.Format.BOUNTY_PERSONAL);
+									String personMsg = config.getString(Node.O_F_BOUNTY_PERSONAL);
 									personMsg = Manager.formatRoles(personMsg, source, p, amount);
 									personMsg = Manager.formatColor(personMsg);
 									sender.sendMessage(personMsg);

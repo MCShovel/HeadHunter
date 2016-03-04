@@ -16,14 +16,15 @@ public class Reload {
 		if(Manager.hasAnyPerms(sender, new String[]{"hunter.reload"})) {
 			ConfigAccessor	offers = Manager.getAccessor("offers.yml"),
 							signs = Manager.getAccessor("signs.yml"),
-							properties = Manager.getAccessor("properties.yml");
+							properties = Manager.getAccessor("properties.yml"),
+							messages = Manager.getAccessor("messages.yml");
 			HeadHunter.getPlugin().reloadConfig();
 			offers.reloadConfig(); offers.saveConfig();
 			signs.reloadConfig(); signs.saveConfig();
 			properties.reloadConfig(); properties.saveConfig();
+			messages.reloadConfig(); messages.saveConfig();
+			Messages.refresh();
 			sender.sendMessage("§a" + HeadHunter.getTag() + " reloaded!");
-			sender.sendMessage("§6Remember, right-clicking the signs will update them to display the correct prices.");
-			sender.sendMessage("§6In the future, this will be automatic.");
 		}
 		else
 			sender.sendMessage(Messages.NO_PERMS);

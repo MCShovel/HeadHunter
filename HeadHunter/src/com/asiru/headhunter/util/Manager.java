@@ -1,19 +1,28 @@
 package com.asiru.headhunter.util;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import com.asiru.headhunter.HeadHunter;
+import com.asiru.headhunter.function.HeadFunctions;
+import com.asiru.headhunter.function.LocationFunctions;
+import com.asiru.headhunter.function.PlayerFunctions;
 import com.asiru.headhunter.util.config.Node;
+import com.asiru.headhunter.util.pairing.PairedSkull;
 
 public class Manager {
 	static DecimalFormat format = new DecimalFormat("0.00");
+	static String[] lightningEvents = {"31-10"};
 	
 	/**
 	 * Finds whether a string contains only numbers and decimals.
@@ -106,7 +115,7 @@ public class Manager {
 	 */
 	public static boolean hasAnyPerms(CommandSender cs, String[] perms) {
 		FileConfiguration config = HeadHunter.getPlugin().getConfig();
-		if(!config.getBoolean(Node.Option.USE_PERMS))
+		if(!config.getBoolean(Node.O_USE_PERMS))
 			return true;
 		if(cs.hasPermission("hunter.admin"))
 			return true;
@@ -124,8 +133,16 @@ public class Manager {
 	 */
 	@SuppressWarnings("deprecation")
 	public static OfflinePlayer getPlayerFromString(String s) {
+		if(Bukkit.getPlayer(s) != null)
+			return Bukkit.getPlayer(s);
 		if(Bukkit.getPlayerExact(s) != null)
 			return Bukkit.getPlayerExact(s);
+		/*
+		for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
+			if(p != null && s.equals(p.getName()))
+				return p;
+		}
+		*/
 		return Bukkit.getOfflinePlayer(s);
 	}
 
@@ -139,6 +156,49 @@ public class Manager {
 		if(whitelist.getConfig().contains("whitelist"))
 			list = whitelist.getConfig().getStringList("whitelist");
 		return list;
+	}
+	
+	/**
+	 * Drops the head and deducts the price. Only use inside a PlayerDeathEvent!
+	 * @param victim - The dead one.
+	 */
+	public static void doThings(Player victim, Player killer) {
+		double rate = HeadHunter.getPlugin().getConfig().getDouble(Node.O_D_RATE);
+		if(HeadFunctions.luckDrop(rate)) {
+			Location eventLoc = victim.getLocation();
+			World eventWorld = victim.getWorld();
+			if(LocationFunctions.validLocation(victim)) {
+				if(!victim.hasPermission("hunter.nodrop") || PlayerFunctions.isPlayerListed(victim)) {
+					PairedSkull pair = HeadFunctions.getPairedSkull(killer, victim);
+					if(HeadFunctions.dropWith(pair.getState())) {
+						HeadHunter.getEco().withdrawPlayer(victim, pair.getEcoLoss());
+						eventWorld.dropItemNaturally(eventLoc, pair.getSkull());
+					}
+				}
+			}
+		}
+	}
+	
+	public static boolean isLightningEvent() {
+		Date current = new Date();
+		SimpleDateFormat sdf = new SimpleDateFormat("dd-MM");
+		for(String event : lightningEvents) {
+			if(event.equals(sdf.format(current)))
+				return true;
+		}
+		return false;
+	}
+	
+	public static String getCombatLogString() {
+		if(Bukkit.getPluginManager().isPluginEnabled("CombatTagPlus"))
+			return "CombatTagPlus";
+		if(Bukkit.getPluginManager().isPluginEnabled("CombatTag"))
+			return "CombatTag";
+		if(Bukkit.getPluginManager().isPluginEnabled("PvPManager"))
+			return "PvPManager";
+		if(Bukkit.getPluginManager().isPluginEnabled("CombatLog"))
+			return "CombatLog";
+		return "";
 	}
 	
 	public static ConfigAccessor getAccessor(String fileName) {

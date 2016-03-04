@@ -16,12 +16,14 @@ import com.asiru.headhunter.util.config.Node;
 
 public class PlayerFunctions {
 	public static double getSellRate(Player p) {
-		double sellRate = HeadHunter.getPlugin().getConfig().getDouble(Node.Option.SELL_RATE);
-		for(PermissionAttachmentInfo perm : p.getEffectivePermissions()) {
-			if(perm.getPermission().startsWith("hunter.sellrate.")) {
-				String num = perm.getPermission().replace("hunter.sellrate.", "");
-				if(Manager.isNumeric(num))
-					sellRate = Double.parseDouble(num);
+		double sellRate = HeadHunter.getPlugin().getConfig().getDouble(Node.O_SELL_RATE);
+		if(p != null) {
+			for(PermissionAttachmentInfo perm : p.getEffectivePermissions()) {
+				if(perm.getPermission().startsWith("hunter.sellrate.")) {
+					String num = perm.getPermission().replace("hunter.sellrate.", "");
+					if(Manager.isNumeric(num))
+						sellRate = Double.parseDouble(num);
+				}
 			}
 		}
 		return sellRate;
@@ -29,12 +31,12 @@ public class PlayerFunctions {
 	
 	public static void updateSignAt(Player p, Location loc) {
 		if(loc.getBlock().getState() instanceof Sign) {
-			String top = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TOP);
-			String title = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_TITLE);
-			String value = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_VALUE);
-			String bottom = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.SIGN_BOTTOM);
+			String top = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_TOP);
+			String title = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_TITLE);
+			String value = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_VALUE);
+			String bottom = HeadHunter.getPlugin().getConfig().getString(Node.O_F_SIGN_BOTTOM);
 			String rate = getSellRate(p) + "";
-			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.USE_PERCENT))
+			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_USE_PERCENT))
 				value = value + "%";
 			else
 				value = "$" + value;

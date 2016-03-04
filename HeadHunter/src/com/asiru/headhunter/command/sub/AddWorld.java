@@ -18,14 +18,14 @@ public class AddWorld {
 	 */
 	public static void run(CommandSender sender, String[] args) {
 		if(Manager.hasAnyPerms(sender, new String[]{"hunter.addworld"})) {
-			List<String> list = HeadHunter.getPlugin().getConfig().getStringList(Node.World.VALID_WORLDS);
+			List<String> list = HeadHunter.getPlugin().getConfig().getStringList(Node.W_VALID_WORLDS);
 			switch(args.length) {
 			case 1:
 				if(sender instanceof Player) {
 					Player p = (Player) sender;
 					if(!list.contains(p.getWorld().getName())) {
 						list.add(p.getWorld().getName());
-						HeadHunter.getPlugin().getConfig().set(Node.World.VALID_WORLDS, list);
+						HeadHunter.getPlugin().getConfig().set(Node.W_VALID_WORLDS, list);
 						HeadHunter.getPlugin().saveConfig();
 						sender.sendMessage(Messages.WORLD_ADDED);
 					}
@@ -38,7 +38,7 @@ public class AddWorld {
 			case 2:
 				if(!list.contains(args[1])) {
 					list.add(args[1]);
-					HeadHunter.getPlugin().getConfig().set(Node.World.VALID_WORLDS, list);
+					HeadHunter.getPlugin().getConfig().set(Node.W_VALID_WORLDS, list);
 					HeadHunter.getPlugin().saveConfig();
 					sender.sendMessage(Messages.WORLD_ADDED);
 				}

@@ -72,13 +72,13 @@ public class GUIListeners implements Listener {
 					int amt = 0;
 					for(ItemStack i : iList)
 						amt += i.getAmount();
-					String msg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Gui.SELL_MESSAGE);
+					String msg = HeadHunter.getPlugin().getConfig().getString(Node.O_G_SELL_MESSAGE);
 					msg = msg.replaceAll("VALUE", Manager.formatMoney(value));
 					msg = msg.replaceAll("HUNTER", p.getName());
 					msg = msg.replaceAll("AMOUNT", amt + "");
 					msg = Manager.formatColor(msg);
-					boolean nt = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_NT),
-							pb = HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.SELL_PB);
+					boolean nt = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_SELL_NT),
+							pb = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_SELL_PB);
 					if(nt && amt > 0) {
 						if(pb)
 							p.sendMessage(msg);

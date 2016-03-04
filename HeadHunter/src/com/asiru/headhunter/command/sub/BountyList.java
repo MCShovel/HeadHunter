@@ -45,8 +45,8 @@ public class BountyList {
 			Collections.reverse(list);
 			if(!list.isEmpty()) {
 				sender.sendMessage("§6---=< §eBounty List §6>=---");
-				String msg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.BOUNTY_TOTAL);
-				int count = HeadHunter.getPlugin().getConfig().getInt(Node.Option.LIST_SIZE);
+				String msg = HeadHunter.getPlugin().getConfig().getString(Node.O_F_BOUNTY_TOTAL);
+				int count = HeadHunter.getPlugin().getConfig().getInt(Node.O_LIST_SIZE);
 				if(count < 0) {
 					for(Map.Entry<OfflinePlayer, Double> entry : list) {
 						String sent = Manager.formatBaseRoles(msg, entry.getKey(), entry.getValue());

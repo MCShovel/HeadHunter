@@ -34,11 +34,11 @@ public class BountyRemove {
 							amount = -Double.parseDouble(args[3]);
 						Bounties.applyBounty(p, target, amount);
 						HeadHunter.getEco().depositPlayer(p, Math.abs(amount));
-						String msg = HeadHunter.getPlugin().getConfig().getString(Node.Option.Format.BOUNTY_REMOVE);
+						String msg = HeadHunter.getPlugin().getConfig().getString(Node.O_F_BOUNTY_REMOVE);
 						msg = Manager.formatRoles(msg, p, target, Math.abs(amount));
 						msg = Manager.formatColor(msg);
-						if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_NT)) {
-							if(HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Message.BOUNTY_PB))
+						if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_BOUNTY_NT)) {
+							if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_M_BOUNTY_PB))
 								Bukkit.broadcastMessage(msg);
 							else
 								p.sendMessage(msg);

@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import net.milkbowl.vault.economy.Economy;
 
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,31 +25,42 @@ public class HeadHunter extends JavaPlugin {
 	private static Plugin plugin;
 	
 	private static LinkedHashMap<String, Boolean> hunterMap = new LinkedHashMap<String, Boolean>();
+	// public static String combatLogString = "";
 	
 	@Override
 	public void onEnable() {
 		plugin = this;
+		
 		ConfigAccessor offers = new ConfigAccessor(this, "offers.yml");
 		ConfigAccessor skulls = new ConfigAccessor(this, "skulls.yml");
 		ConfigAccessor signs = new ConfigAccessor(this, "signs.yml");
 		ConfigAccessor properties = new ConfigAccessor(this, "properties.yml");
 		ConfigAccessor whitelist = new ConfigAccessor(this, "whitelist.yml");
+		ConfigAccessor messages = new ConfigAccessor(this, "messages.yml");
+		
 		getCommand("hunter").setExecutor(new MainExecutor());
 		getCommand("sellhead").setExecutor(new MainExecutor());
 		getCommand("bounty").setExecutor(new MainExecutor());
+		
 		getServer().getPluginManager().registerEvents(new PlayerListeners(), this);
 		getServer().getPluginManager().registerEvents(new SignListeners(), this);
 		getServer().getPluginManager().registerEvents(new SkullListeners(), this);
 		getServer().getPluginManager().registerEvents(new CPlayerHeads(), this);
 		getServer().getPluginManager().registerEvents(new GUIListeners(), this);
+		
 		saveDefaultConfig();
 		refreshConfig();
 		reloadConfig();
+		
 		offers.saveDefaultConfig();
 		skulls.saveDefaultConfig();
 		signs.saveDefaultConfig();
 		properties.saveDefaultConfig();
 		whitelist.saveDefaultConfig();
+		messages.saveDefaultConfig();
+		
+		// combatLogString = Manager.getCombatLogString();
+		
 		Bukkit.getConsoleSender().sendMessage("§a" + getTag() + " has been Enabled!");
 	}
 	
@@ -114,63 +124,68 @@ public class HeadHunter extends JavaPlugin {
 	/**
 	 * Replaces any removed or missing default config values.
 	 */
-	public static void refreshConfig() {
-		FileConfiguration config = plugin.getConfig();
+	public void refreshConfig() {
 		LinkedHashMap<String, Object> map = new LinkedHashMap<String, Object>();
 		
-		map.put(Node.Option.HOARD_MODE, false);
-		map.put(Node.Option.SELL_RATE, 10.0);
-		map.put(Node.Option.USE_PERCENT, true);
-		map.put(Node.Option.USE_PERMS, true);
-		map.put(Node.Option.LIST_SIZE, -1);
-		map.put(Node.Option.MIN_BOUNTY, 20.0);
+		map.put(Node.O_HOARD_MODE, false);
+		map.put(Node.O_SELL_RATE, 10.0);
+		map.put(Node.O_USE_PERCENT, true);
+		map.put(Node.O_USE_PERMS, true);
+		map.put(Node.O_LIST_SIZE, -1);
+		map.put(Node.O_MIN_BOUNTY, 20.0);
 		
-		map.put(Node.Option.Gui.ENABLED, false);
-		map.put(Node.Option.Gui.TITLE, "&4&lSell Heads");
-		map.put(Node.Option.Gui.SIZE, 54);
-		map.put(Node.Option.Gui.TOTAL_VALUE, "&eTotal Sell Price:&a $VALUE");
-		map.put(Node.Option.Gui.SELL_MESSAGE, "&6HUNTER sold AMOUNT head(s) for $VALUE!");
+		map.put(Node.O_G_ENABLED, false);
+		map.put(Node.O_G_TITLE, "&4&lSell Heads");
+		map.put(Node.O_G_SIZE, 54);
+		map.put(Node.O_G_TOTAL_VALUE, "&eTotal Sell Price:&a $VALUE");
+		map.put(Node.O_G_SELL_MESSAGE, "&6HUNTER sold AMOUNT head(s) for $VALUE!");
 		
-		map.put(Node.Option.Drop.RATE, 100.0);
-		map.put(Node.Option.Drop.BALANCE, true);
-		map.put(Node.Option.Drop.BOUNTY, true);
+		map.put(Node.O_D_RATE, 100.0);
+		map.put(Node.O_D_BALANCE, true);
+		map.put(Node.O_D_BOUNTY, true);
+		map.put(Node.O_D_FIRE_TICK, false);
+		map.put(Node.O_D_ANY_CAUSE, false);
 		
-		map.put(Node.Option.Message.SELL_NT, true);
-		map.put(Node.Option.Message.SELL_PB, true);
-		map.put(Node.Option.Message.BOUNTY_NT, true);
-		map.put(Node.Option.Message.BOUNTY_PB, true);
+		map.put(Node.O_M_SELL_NT, true);
+		map.put(Node.O_M_SELL_PB, true);
+		map.put(Node.O_M_BOUNTY_NT, true);
+		map.put(Node.O_M_BOUNTY_PB, true);
 		
-		map.put(Node.Option.ValuePlacement.BALANCE, true);
-		map.put(Node.Option.ValuePlacement.BOUNTY, true);
-		map.put(Node.Option.ValuePlacement.CUMULATIVE, false);
+		map.put(Node.O_VP_BALANCE, true);
+		map.put(Node.O_VP_BOUNTY, true);
+		map.put(Node.O_VP_CUMULATIVE, false);
 		
-		map.put(Node.Option.Format.SIGN_TOP, "---------------");
-		map.put(Node.Option.Format.SIGN_TITLE, "&4&l[SellHead]");
-		map.put(Node.Option.Format.SIGN_VALUE, "VALUE");
-		map.put(Node.Option.Format.SIGN_BOTTOM, "---------------");
-		map.put(Node.Option.Format.SKULL_VALUE, "&eSell Price:&a $VALUE");
-		map.put(Node.Option.Format.SKULL_WORTHLESS, "&eSell Price: &cWorthless");
-		map.put(Node.Option.Format.SELL_NOTIFY, "&6HUNTER sold VICTIM\'s head for $VALUE!");
-		map.put(Node.Option.Format.SELL_WORTHLESS, "&cThis skull is worthless! It has been removed from your inventory.");
-		map.put(Node.Option.Format.BOUNTY_PLACE, "&6Player &eHUNTER &6has added&e $VALUE &6to &eVICTIM&6\'s bounty!");
-		map.put(Node.Option.Format.BOUNTY_REMOVE, "&6Player &eHUNTER &6has removed&e $VALUE &6from &eVICTIM&6\'s bounty!");
-		map.put(Node.Option.Format.BOUNTY_TOTAL, "&6Total Bounty on &eVICTIM&6:&e $VALUE");
-		map.put(Node.Option.Format.BOUNTY_PERSONAL, "&6Your Bounty on &eVICTIM&6:&e $VALUE");
+		map.put(Node.O_F_SIGN_TOP, "---------------");
+		map.put(Node.O_F_SIGN_TITLE, "&4&l[SellHead]");
+		map.put(Node.O_F_SIGN_VALUE, "VALUE");
+		map.put(Node.O_F_SIGN_BOTTOM, "---------------");
+		map.put(Node.O_F_SKULL_VALUE, "&eSell Price:&a $VALUE");
+		map.put(Node.O_F_SKULL_WORTHLESS, "&eSell Price: &cWorthless");
+		map.put(Node.O_F_SELL_NOTIFY, "&6HUNTER sold VICTIM\'s head for $VALUE!");
+		map.put(Node.O_F_SELL_WORTHLESS, "&cThis skull is worthless! It has been removed from your inventory.");
+		map.put(Node.O_F_BOUNTY_PLACE, "&6Player &eHUNTER &6has added&e $VALUE &6to &eVICTIM&6\'s bounty!");
+		map.put(Node.O_F_BOUNTY_REMOVE, "&6Player &eHUNTER &6has removed&e $VALUE &6from &eVICTIM&6\'s bounty!");
+		map.put(Node.O_F_BOUNTY_TOTAL, "&6Total Bounty on &eVICTIM&6:&e $VALUE");
+		map.put(Node.O_F_BOUNTY_PERSONAL, "&6Your Bounty on &eVICTIM&6:&e $VALUE");
 		
-		map.put(Node.World.IGNORE_WORLDS, false);
-		map.put(Node.World.VALID_WORLDS, initList());
+		map.put(Node.W_IGNORE_WORLDS, false);
+		map.put(Node.W_VALID_WORLDS, initList());
 		
-		map.put(Node.PluginSupport.FACTIONS_WILDERNESS, true);
-		map.put(Node.PluginSupport.FACTIONS_WARZONE, false);
-		map.put(Node.PluginSupport.FACTIONS_SAFEZONE, false);
+		map.put(Node.PS_FACTIONS_WILDERNESS, true);
+		map.put(Node.PS_FACTIONS_WARZONE, false);
+		map.put(Node.PS_FACTIONS_SAFEZONE, false);
 		
-		map.put(Node.PluginSupport.MOBHUNTER_SILENCE, false);
+		map.put(Node.PS_MOBHUNTER_SILENCE, false);
+		
+		map.put(Node.PS_COMBATLOG_ON_LOGOUT, true);
+		
+		map.put(Node.PS_COMBATTAG_NPC_KILL, true);
 		
 		for(Entry<String, Object> entry : map.entrySet()) {
-			if(!config.contains(entry.getKey()))
-				config.set(entry.getKey(), entry.getValue());
+			if(!getConfig().contains(entry.getKey()))
+				getConfig().set(entry.getKey(), entry.getValue());
 		}
-		plugin.saveConfig();
+		saveConfig();
 	}
 	
 	public static void refreshProperties() {

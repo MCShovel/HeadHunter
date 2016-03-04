@@ -17,16 +17,16 @@ import com.asiru.headhunter.util.config.Node;
 
 public class HunterGUI {
 	public static boolean isEnabled() {
-		return HeadHunter.getPlugin().getConfig().getBoolean(Node.Option.Gui.ENABLED);
+		return HeadHunter.getPlugin().getConfig().getBoolean(Node.O_G_ENABLED);
 	}
 	
 	public static String getTitle() {
-		String title = HeadHunter.getPlugin().getConfig().getString(Node.Option.Gui.TITLE);
+		String title = HeadHunter.getPlugin().getConfig().getString(Node.O_G_TITLE);
 		return Manager.formatColor(title);
 	}
 	
 	public static int getSize() {
-		int size = HeadHunter.getPlugin().getConfig().getInt(Node.Option.Gui.SIZE);
+		int size = HeadHunter.getPlugin().getConfig().getInt(Node.O_G_SIZE);
 		if(size > 54)
 			return 54;
 		if(size <= 0)
@@ -83,7 +83,7 @@ public class HunterGUI {
 		ItemStack i = new ItemStack(Material.EMERALD);
 		ItemMeta m = i.getItemMeta();
 		List<String> l = new ArrayList<String>();
-		String price = HeadHunter.getPlugin().getConfig().getString(Node.Option.Gui.TOTAL_VALUE);
+		String price = HeadHunter.getPlugin().getConfig().getString(Node.O_G_TOTAL_VALUE);
 		price = Manager.formatColor(price.replaceAll("VALUE", Manager.formatMoney(amount)));
 		l.add(price);
 		m.setLore(l);
@@ -96,7 +96,7 @@ public class HunterGUI {
 		ItemStack i = new ItemStack(Material.EMERALD_BLOCK);
 		ItemMeta m = i.getItemMeta();
 		List<String> l = new ArrayList<String>();
-		String price = HeadHunter.getPlugin().getConfig().getString(Node.Option.Gui.TOTAL_VALUE);
+		String price = HeadHunter.getPlugin().getConfig().getString(Node.O_G_TOTAL_VALUE);
 		price = Manager.formatColor(price.replaceAll("VALUE", Manager.formatMoney(amount)));
 		l.add(price);
 		l.add("§eSell these heads?");

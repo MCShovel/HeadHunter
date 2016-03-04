@@ -24,8 +24,8 @@ public class LocationFunctions {
 		boolean r = true;
 		Plugin plugin = HeadHunter.getPlugin();
 		FileConfiguration config = plugin.getConfig();
-		if(!config.getBoolean(Node.World.IGNORE_WORLDS)) {
-			if(!config.getStringList(Node.World.VALID_WORLDS).contains(p.getWorld().getName()))
+		if(!config.getBoolean(Node.W_IGNORE_WORLDS)) {
+			if(!config.getStringList(Node.W_VALID_WORLDS).contains(p.getWorld().getName()))
 				r = false;
 		}
 		if(Bukkit.getPluginManager().isPluginEnabled("Factions")) {
@@ -35,11 +35,11 @@ public class LocationFunctions {
 				com.massivecraft.factions.entity.Faction w = FactionColl.get().getWarzone();
 				com.massivecraft.factions.entity.Faction s = FactionColl.get().getSafezone();
 				com.massivecraft.factions.entity.Faction f = BoardColl.get().getFactionAt(PS.valueOf(p.getLocation()));
-				if((!config.getBoolean(Node.PluginSupport.FACTIONS_WILDERNESS)) && (f.equals(d)))
+				if((!config.getBoolean(Node.PS_FACTIONS_WILDERNESS)) && (f.equals(d)))
 					r = false;
-				if((!config.getBoolean(Node.PluginSupport.FACTIONS_WARZONE)) && (f.equals(w)))
+				if((!config.getBoolean(Node.PS_FACTIONS_WARZONE)) && (f.equals(w)))
 					r = false;
-				if((!config.getBoolean(Node.PluginSupport.FACTIONS_SAFEZONE)) && (f.equals(s)))
+				if((!config.getBoolean(Node.PS_FACTIONS_SAFEZONE)) && (f.equals(s)))
 					r = false;
 			}
 			/*
