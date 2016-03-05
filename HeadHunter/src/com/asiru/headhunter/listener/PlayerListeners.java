@@ -40,7 +40,9 @@ public class PlayerListeners implements Listener {
 					Manager.doThings(victim, victim.getKiller());
 			}
 			else if(cause == DamageCause.FIRE_TICK) {
-				if(FIRE_TICKS.containsKey(key)) {
+				boolean firetick = HeadHunter.getPlugin().getConfig().getBoolean(Node.O_D_FIRE_TICK);
+				System.out.println(firetick);
+				if(firetick && FIRE_TICKS.containsKey(key)) {
 					String uuid = FIRE_TICKS.get(key);
 					if(uuid != null) {
 						Player killer = Bukkit.getPlayer(UUID.fromString(uuid));
@@ -61,8 +63,7 @@ public class PlayerListeners implements Listener {
 		if(combuster instanceof Player && combustee instanceof Player) {
 			Player	er = (Player) combuster,
 					ee = (Player) combustee;
-			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_D_FIRE_TICK))
-				FIRE_TICKS.put(ee.getUniqueId().toString(), er.getUniqueId().toString());
+			FIRE_TICKS.put(ee.getUniqueId().toString(), er.getUniqueId().toString());
 		}
 	}
 	
@@ -128,8 +129,7 @@ public class PlayerListeners implements Listener {
 				if(!flameVal.isEmpty() && !shootVal.isEmpty()) {
 					if(flameVal.get(0).asBoolean()) {
 						String	shotID = shootVal.get(0).asString();
-						if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_D_FIRE_TICK))
-							FIRE_TICKS.put(hitID, shotID);
+						FIRE_TICKS.put(hitID, shotID);
 					}
 				}
 			}
