@@ -12,7 +12,7 @@ import com.asiru.headhunter.util.Messages;
 
 public class Whitelist {
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.whitelist"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.whitelist")) {
 			switch(args.length) {
 			case 1:
 				List<String> uuidList = Manager.getWhitelist();

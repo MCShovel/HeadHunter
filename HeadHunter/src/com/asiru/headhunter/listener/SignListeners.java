@@ -26,7 +26,7 @@ public class SignListeners implements Listener {
 	@EventHandler
 	public void onSignChange(SignChangeEvent e) {
 		if(e.getLine(0).equalsIgnoreCase("[SellHead]")) {
-			if(Manager.hasAnyPerms(e.getPlayer(), new String[]{"hunter.sign.create", "hunter.sign"})) {
+			if(Manager.hasAnyPerms(e.getPlayer(), "hunter.sign.create", "hunter.sign")) {
 				ConfigAccessor signs = Manager.getAccessor("signs.yml");
 				String tag = LocationFunctions.parseLocation(e.getBlock().getLocation());
 				signs.getConfig().set(tag, e.getPlayer().getUniqueId().toString());
@@ -63,7 +63,7 @@ public class SignListeners implements Listener {
 			String tag = LocationFunctions.parseLocation(loc);
 			if(signs.getConfig().contains(tag)) {
 				Player p = e.getPlayer();
-				if(Manager.hasAnyPerms(p, new String[]{"hunter.sign.break", "hunter.sign"})
+				if(Manager.hasAnyPerms(p, "hunter.sign.break", "hunter.sign")
 					|| p.getUniqueId().equals(UUID.fromString(signs.getConfig().getString(tag)))) {
 					signs.getConfig().set(tag, null);
 					signs.saveConfig();
@@ -85,7 +85,7 @@ public class SignListeners implements Listener {
 			Location loc = e.getClickedBlock().getLocation();
 			ConfigAccessor signs = Manager.getAccessor("signs.yml");
 			if(signs.getConfig().contains(LocationFunctions.parseLocation(loc))) {
-				if(Manager.hasAnyPerms(p, new String[]{"hunter.sell", "hunter.use"})) {
+				if(Manager.hasAnyPerms(p, "hunter.sell", "hunter.use")) {
 					if(HunterGUI.isEnabled())
 						HunterGUI.openGUI(p);
 					else

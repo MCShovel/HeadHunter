@@ -8,16 +8,17 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import com.asiru.headhunter.HeadHunter;
+import com.asiru.headhunter.mobhunter.MobHunter;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.Messages;
 import com.asiru.headhunter.util.config.Node;
 import com.asiru.headhunter.util.pairing.PairState;
 import com.asiru.headhunter.util.pairing.PairedSkull;
-import com.asiru.mobhunter.MobHunter;
 
 public class HeadFunctions {
 	/**
@@ -26,8 +27,11 @@ public class HeadFunctions {
 	 */
 	public static void sellSkull(Player p) {
 		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
-			if(p.getItemInHand().getType() == Material.SKULL_ITEM) {
-				ItemStack skull = p.getItemInHand();
+			PlayerInventory pinv = p.getInventory();
+			boolean	mainHand =	pinv.getItemInMainHand().getType() == Material.SKULL_ITEM;
+			boolean	offHand =	pinv.getItemInOffHand().getType() == Material.SKULL_ITEM;
+			if(mainHand || offHand) {
+				ItemStack skull = ((mainHand) ? pinv.getItemInMainHand() : pinv.getItemInOffHand());
 				SkullMeta sm = (SkullMeta) skull.getItemMeta();
 				if(skull.getDurability() == 3) {
 					if(sm.hasOwner() && sm.hasLore()) {
@@ -35,13 +39,10 @@ public class HeadFunctions {
 						String uuid = "";
 						try {
 							owner = sm.getOwner();
-							if(HeadHunter.isHunterEnabled("MobHunter") && owner.startsWith("MHF_")) {
+							if(owner.startsWith("MHF_")) {
 								owner = owner.replaceFirst("MHF_", "");
 								owner = MobHunter.mobList.get(owner).toLowerCase();
-								String article = "a";
-								if(owner.startsWith("a") || owner.startsWith("e") || owner.startsWith("i") ||
-										owner.startsWith("o") || owner.startsWith("u"))
-									article = "an";
+								String article = ((owner.matches("[aeiou].*")) ? "an" : "a");
 								owner = article + " " + owner;
 							}
 							else
@@ -212,7 +213,7 @@ public class HeadFunctions {
 		String loreString = skull.getItemMeta().getLore().get(0);
 		loreString = HeadFunctions.removeLoreFormat(loreString);
 		double skullWorth = 0.0;
-		if(!loreString.isEmpty() && loreString.matches("[0-9]*[.][0-9]*"))
+		if(!loreString.isEmpty())
 			skullWorth = Double.parseDouble(loreString);
 		return skullWorth;
 	}
@@ -225,7 +226,12 @@ public class HeadFunctions {
 	 * @return The formatted string.
 	 */
 	public static String removeLoreFormat(String s) {
-		s = s.replaceAll("[^0-9.]", "");
-		return s;
+		String crap = s.replaceAll("[0-9]*[,.]?[0-9]*", "");
+		String notCrap = s.replaceAll("[" + crap + "]", "");
+		while(notCrap.length() > 0 && !Character.isDigit(notCrap.charAt(0)))
+			notCrap = notCrap.substring(1);
+		while(notCrap.length() > 0 && !Character.isDigit(notCrap.charAt(notCrap.length()-1)))
+			notCrap = notCrap.substring(0, notCrap.length()-1);
+		return notCrap.replaceAll(",", ".");
 	}
 }

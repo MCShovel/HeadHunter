@@ -27,7 +27,7 @@ public class BountyList {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.list", "hunter.bounty", "hunter.bounty.list", "hunter.use"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.list", "hunter.bounty", "hunter.bounty.list", "hunter.use")) {
 			ConfigAccessor accessor = Manager.getAccessor("offers.yml");
 			FileConfiguration offers = accessor.getConfig();
 			Map<OfflinePlayer, Double> map = new HashMap<OfflinePlayer, Double>();

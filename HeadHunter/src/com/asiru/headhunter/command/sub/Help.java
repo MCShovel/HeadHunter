@@ -12,7 +12,7 @@ public class Help {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.help", "hunter.use"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.help", "hunter.use")) {
 			for(String s : Messages.HELP_NORMAL) {
 				s = Manager.formatColor(s);
 				sender.sendMessage(s);

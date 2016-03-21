@@ -19,7 +19,7 @@ public class BountyRemove {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.bounty.remove", "hunter.bounty", "hunter.use"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.bounty.remove", "hunter.bounty", "hunter.use")) {
 			if(sender instanceof Player) {
 				Player p = (Player) sender;
 				if(args.length == 3 || args.length == 4)  {

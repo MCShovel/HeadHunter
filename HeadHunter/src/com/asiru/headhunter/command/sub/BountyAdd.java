@@ -21,7 +21,7 @@ public class BountyAdd {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.bounty.add", "hunter.bounty", "hunter.use"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.bounty.add", "hunter.bounty", "hunter.use")) {
 			if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
 				if(sender instanceof Player) {
 					Player p = (Player) sender;

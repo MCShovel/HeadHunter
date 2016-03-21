@@ -20,7 +20,7 @@ public class SellHead {
 		if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
 			if(sender instanceof Player) {
 				Player p = (Player) sender;
-				if(Manager.hasAnyPerms(sender, new String[]{"hunter.sell", "hunter.use"})) {
+				if(Manager.hasAnyPerms(sender, "hunter.sell", "hunter.use")) {
 					if(HunterGUI.isEnabled())
 						HunterGUI.openGUI(p);
 					else

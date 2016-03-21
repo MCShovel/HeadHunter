@@ -27,7 +27,7 @@ import com.asiru.headhunter.util.pairing.PairedSkull;
 
 public class CPlayerHeads implements Listener {
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.convert", "hunter.convert.PlayerHeads"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.convert", "hunter.convert.PlayerHeads")) {
 			if(!HeadHunter.getPlugin().getConfig().getBoolean(Node.O_HOARD_MODE)) {
 				ConfigAccessor prop = Manager.getAccessor("properties.yml");
 				prop.getConfig().set(Prop.CONVERT_ON_LOGIN, true);

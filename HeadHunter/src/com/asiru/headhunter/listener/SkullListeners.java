@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
+import com.asiru.headhunter.mobhunter.MobHunter;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 
@@ -50,6 +51,8 @@ public class SkullListeners implements Listener {
 				String setLore = skullAcc.getConfig().getString(getPath + ".lore");
 				setLore = Manager.formatColor(setLore, "\\" + "xa7");
 				String setOwner = skullAcc.getConfig().getString(getPath + ".owner");
+				if(setOwner.startsWith("MHF_"))
+					sm.setDisplayName("§a" + MobHunter.getTagMap().get(setOwner.substring(4)) + " Head");
 				List<String> lores = new ArrayList<String>();
 				lores.add(0, setLore);
 				sm.setLore(lores);

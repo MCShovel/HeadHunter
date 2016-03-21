@@ -12,6 +12,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.function.HeadFunctions;
@@ -19,10 +20,6 @@ import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.config.Node;
 
 public class GUIListeners implements Listener {
-	/*
-	 * NOTE: The getCursor() and getCurrentItem() methods 
-	 * return values from BEFORE the ItemStacks are changed.
-	 */
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent e) {
 		if(HunterGUI.isHunterGUI(e.getView().getTopInventory())) {
@@ -33,7 +30,7 @@ public class GUIListeners implements Listener {
 						rightSlotItem = hunterInv.getItem(HunterGUI.getRight());
 			HumanEntity p = e.getWhoClicked();
 			InventoryAction action = e.getAction();
-			ArrayList<ItemStack> iList = HunterGUI.createHeadList(hunterInv);
+			ArrayList<ItemStack> iList = HunterGUI.createHeadList(p, hunterInv);
 			//If the player clicked on the HunterGUI:
 			if(clickdInv.equals(hunterInv)) {
 				Material mat = current.getType(), cmat = cursor.getType();
@@ -46,8 +43,11 @@ public class GUIListeners implements Listener {
 					}
 				}
 				double value = 0.0;
-				if(cmat == Material.SKULL_ITEM)
-					iList.add(cursor);
+				if(cmat == Material.SKULL_ITEM) {
+					SkullMeta m = (SkullMeta) cursor.getItemMeta();
+					if(!m.getOwner().equals(p.getName()))
+						iList.add(cursor);
+				}
 				if(mat == Material.EMERALD) {
 					//If the player clicked the sell button:
 					value = HeadFunctions.getValueOnSkull(rightSlotItem);
@@ -66,8 +66,13 @@ public class GUIListeners implements Listener {
 					//If the player clicked the confirm sell button:
 					value = HeadFunctions.getValueOnSkull(leftSlotItem);
 					HeadHunter.getEco().depositPlayer(Manager.getPlayerFromString(p.getName()), value);
-					//TODO: HunterGUI sell message
-					hunterInv.clear();
+					for(int i = 0; i < hunterInv.getSize(); i++) {
+						if(hunterInv.getItem(i) != null && hunterInv.getItem(i).getType() == Material.SKULL_ITEM) {
+							SkullMeta m = (SkullMeta) hunterInv.getItem(i).getItemMeta();
+							if(!m.getOwner().equals(p.getName()))
+								hunterInv.clear(i);
+						}
+					}
 					p.closeInventory();
 					int amt = 0;
 					for(ItemStack i : iList)

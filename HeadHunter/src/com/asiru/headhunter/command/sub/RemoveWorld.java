@@ -17,7 +17,7 @@ public class RemoveWorld {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.removeworld"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.removeworld")) {
 			List<String> list = HeadHunter.getPlugin().getConfig().getStringList(Node.W_VALID_WORLDS);
 			switch(args.length) {
 			case 1:

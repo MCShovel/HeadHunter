@@ -143,22 +143,22 @@ public class PlayerListeners implements Listener {
 	
 	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent e) {
+		// TODO Combat Log Quit
+		// When the player leaves, check the combat log plugins to see if the player was in combat.
+		// If they player was in combat, add them to the LEFT_IN_COMBAT ArrayList.
+		// Drop the player's head with money anyway.
 		/*
-		 * TODO Combat Log Quit
-		 * When the player leaves, check the combat log plugins to see if the player was in combat.
-		 * If they player was in combat, add them to the LEFT_IN_COMBAT ArrayList.
-		 * Drop the player's head with money anyway.
 		if(!HeadHunter.combatLogString.equals("")) {
 			Plugin clp = Bukkit.getPluginManager().getPlugin(HeadHunter.combatLogString);
 			Player victim = e.getPlayer();
 			if(HeadHunter.combatLogString.equals("CombatLog")) {
 				CombatLog plugin = (CombatLog) clp;
 				if(plugin.taggedPlayers.containsKey(victim.getName())) {
-					if(HeadHunter.getPlugin().getConfig().getBoolean(Node.PluginSupport.COMBATLOG_ON_LOGOUT)) {
+					if(HeadHunter.getPlugin().getConfig().getBoolean(Node.PS_COMBATLOG_ON_LOGOUT)) {
 						long victimTime = plugin.taggedPlayers.get(victim.getName());
 						for(Entry<String, Long> entry : plugin.taggedPlayers.entrySet()) {
 							if(entry.getValue() == victimTime) {
-								Player hunter = Manager.getPlayerFromString(entry.getKey());
+								Player hunter = Manager.getPlayerFromString(entry.getKey()).getPlayer();
 								Manager.doThings(victim, hunter);
 								break;
 							}

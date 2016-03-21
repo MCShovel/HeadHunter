@@ -5,10 +5,12 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import com.asiru.headhunter.HeadHunter;
 import com.asiru.headhunter.function.HeadFunctions;
@@ -70,11 +72,14 @@ public class HunterGUI {
 		return value;
 	}
 	
-	public static ArrayList<ItemStack> createHeadList(Inventory hunterInv) {
+	public static ArrayList<ItemStack> createHeadList(HumanEntity viewer, Inventory hunterInv) {
 		ArrayList<ItemStack> list = new ArrayList<ItemStack>();
 		for(ItemStack i : hunterInv.getContents()) {
-			if(i != null && i.getType() == Material.SKULL_ITEM)
-				list.add(i.clone());
+			if(i != null && i.getType() == Material.SKULL_ITEM) {
+				SkullMeta m = (SkullMeta) i.getItemMeta();
+				if(!m.getOwner().equals(viewer.getName()))
+					list.add(i);
+			}
 		}
 		return list;
 	}

@@ -49,8 +49,6 @@ public class Node {
 								PS_FACTIONS_WARZONE =		"plugin-support.factions.enabled.warzone",
 								PS_FACTIONS_SAFEZONE =		"plugin-support.factions.enabled.safezone",
 								
-								PS_MOBHUNTER_SILENCE =		"plugin-support.mobhunter.silence-notify",
-								
 								PS_COMBATLOG_ON_LOGOUT =	"plugin-support.combatlog.drop-on-logout",
 								
 								PS_COMBATTAG_NPC_KILL =		"plugin-support.combattag.drop-from-npc";

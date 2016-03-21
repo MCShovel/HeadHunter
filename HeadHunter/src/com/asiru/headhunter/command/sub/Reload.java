@@ -13,7 +13,7 @@ public class Reload {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.reload"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.reload")) {
 			ConfigAccessor	offers = Manager.getAccessor("offers.yml"),
 							signs = Manager.getAccessor("signs.yml"),
 							properties = Manager.getAccessor("properties.yml"),

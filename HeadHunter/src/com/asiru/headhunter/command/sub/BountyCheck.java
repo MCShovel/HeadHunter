@@ -19,7 +19,7 @@ public class BountyCheck {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.bounty.check", "hunter.bounty", "hunter.use"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.bounty.check", "hunter.bounty", "hunter.use")) {
 			if(HeadHunter.getPlugin().getConfig().getBoolean(Node.O_VP_BOUNTY)) {
 				if(args.length == 3) {
 					OfflinePlayer p = Manager.getPlayerFromString(args[2]);

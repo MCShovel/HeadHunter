@@ -113,7 +113,7 @@ public class Manager {
 	 * @param perms - The string array to be compared with.
 	 * @return Whether the CommandSender has any of the permissions in the array.
 	 */
-	public static boolean hasAnyPerms(CommandSender cs, String[] perms) {
+	public static boolean hasAnyPerms(CommandSender cs, String... perms) {
 		FileConfiguration config = HeadHunter.getPlugin().getConfig();
 		if(!config.getBoolean(Node.O_USE_PERMS))
 			return true;
@@ -137,12 +137,6 @@ public class Manager {
 			return Bukkit.getPlayer(s);
 		if(Bukkit.getPlayerExact(s) != null)
 			return Bukkit.getPlayerExact(s);
-		/*
-		for(OfflinePlayer p : Bukkit.getOfflinePlayers()) {
-			if(p != null && s.equals(p.getName()))
-				return p;
-		}
-		*/
 		return Bukkit.getOfflinePlayer(s);
 	}
 

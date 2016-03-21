@@ -16,6 +16,8 @@ import com.asiru.headhunter.gui.GUIListeners;
 import com.asiru.headhunter.listener.PlayerListeners;
 import com.asiru.headhunter.listener.SignListeners;
 import com.asiru.headhunter.listener.SkullListeners;
+import com.asiru.headhunter.mobhunter.MHListeners;
+import com.asiru.headhunter.mobhunter.MobHunter;
 import com.asiru.headhunter.util.ConfigAccessor;
 import com.asiru.headhunter.util.Manager;
 import com.asiru.headhunter.util.config.Node;
@@ -24,8 +26,7 @@ import com.asiru.headhunter.util.config.Prop;
 public class HeadHunter extends JavaPlugin {
 	private static Plugin plugin;
 	
-	private static LinkedHashMap<String, Boolean> hunterMap = new LinkedHashMap<String, Boolean>();
-	// public static String combatLogString = "";
+	public static String combatLogString = "";
 	
 	@Override
 	public void onEnable() {
@@ -37,6 +38,7 @@ public class HeadHunter extends JavaPlugin {
 		ConfigAccessor properties = new ConfigAccessor(this, "properties.yml");
 		ConfigAccessor whitelist = new ConfigAccessor(this, "whitelist.yml");
 		ConfigAccessor messages = new ConfigAccessor(this, "messages.yml");
+		ConfigAccessor mobhunter = new ConfigAccessor(this, "mobhunter.yml");
 		
 		getCommand("hunter").setExecutor(new MainExecutor());
 		getCommand("sellhead").setExecutor(new MainExecutor());
@@ -47,9 +49,11 @@ public class HeadHunter extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new SkullListeners(), this);
 		getServer().getPluginManager().registerEvents(new CPlayerHeads(), this);
 		getServer().getPluginManager().registerEvents(new GUIListeners(), this);
+		getServer().getPluginManager().registerEvents(new MHListeners(), this);
 		
 		saveDefaultConfig();
 		refreshConfig();
+		MobHunter.refreshDefaults();
 		reloadConfig();
 		
 		offers.saveDefaultConfig();
@@ -58,8 +62,9 @@ public class HeadHunter extends JavaPlugin {
 		properties.saveDefaultConfig();
 		whitelist.saveDefaultConfig();
 		messages.saveDefaultConfig();
+		mobhunter.saveDefaultConfig();
 		
-		// combatLogString = Manager.getCombatLogString();
+		combatLogString = Manager.getCombatLogString();
 		
 		Bukkit.getConsoleSender().sendMessage("§a" + getTag() + " has been Enabled!");
 	}
@@ -84,7 +89,7 @@ public class HeadHunter extends JavaPlugin {
 	 * @return This server's economy manager hooked to Vault.
 	 */
 	public static Economy getEco() {
-		return (Economy) getPlugin().getServer().getServicesManager().getRegistration(Economy.class).getProvider();
+		return Bukkit.getServicesManager().getRegistration(Economy.class).getProvider();
 	}
 	
 	/**
@@ -93,24 +98,6 @@ public class HeadHunter extends JavaPlugin {
 	public static String getTag() {
 		String r = getPlugin().getName() + " v" + getPlugin().getDescription().getVersion();
 		return r;
-	}
-	
-	/**
-	 * Uses a plugin name and a boolean state to set whether another Hunter plugin is enabled.
-	 * @param pluginName - The name of the other Hunter plugin.
-	 * @param enabled - The state whether the plugin by that name is enabled.
-	 */
-	public static void setHunterEnabled(String pluginName, boolean enabled) {
-		hunterMap.put(pluginName, enabled);
-	}
-	
-	/**
-	 * Uses a plugin name to tell whether another Hunter plugin is enabled.
-	 * @param pluginName - The name of the other Hunter plugin.
-	 * @return - The state whether the plugin by that name is enabled.
-	 */
-	public static boolean isHunterEnabled(String pluginName) {
-		return hunterMap.get(pluginName);
 	}
 	
 	public static List<String> initList() {
@@ -175,11 +162,9 @@ public class HeadHunter extends JavaPlugin {
 		map.put(Node.PS_FACTIONS_WARZONE, false);
 		map.put(Node.PS_FACTIONS_SAFEZONE, false);
 		
-		map.put(Node.PS_MOBHUNTER_SILENCE, false);
+		//map.put(Node.PS_COMBATLOG_ON_LOGOUT, true);
 		
-		map.put(Node.PS_COMBATLOG_ON_LOGOUT, true);
-		
-		map.put(Node.PS_COMBATTAG_NPC_KILL, true);
+		//map.put(Node.PS_COMBATTAG_NPC_KILL, true);
 		
 		for(Entry<String, Object> entry : map.entrySet()) {
 			if(!getConfig().contains(entry.getKey()))

@@ -17,7 +17,7 @@ public class AddWorld {
 	 * @param args - The arguments applied to this command.
 	 */
 	public static void run(CommandSender sender, String[] args) {
-		if(Manager.hasAnyPerms(sender, new String[]{"hunter.addworld"})) {
+		if(Manager.hasAnyPerms(sender, "hunter.addworld")) {
 			List<String> list = HeadHunter.getPlugin().getConfig().getStringList(Node.W_VALID_WORLDS);
 			switch(args.length) {
 			case 1:
